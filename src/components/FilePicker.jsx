@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 
-export function FilePicker({ onFileSelect }) {
+export function FilePicker({ onFileSelect, onClear }) {
     const [fileName, setFileName] = useState('');
+    const fileInputRef = useRef(null);
 
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files || []);
@@ -33,6 +34,17 @@ export function FilePicker({ onFileSelect }) {
         }
     };
 
+    const handleClear = (e) => {
+        e.stopPropagation();
+        setFileName('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        if (onClear) {
+            onClear();
+        }
+    };
+
     return (
         <Card className="w-full">
             <CardHeader>
@@ -47,18 +59,29 @@ export function FilePicker({ onFileSelect }) {
                     <p className="text-sm text-muted-foreground">
                         {fileName || 'Select model and associated files'}
                     </p>
-                    <Input
+                    <input
                         type="file"
                         accept=".gltf,.glb,.bin,.jpg,.png,.jpeg"
                         multiple
                         onChange={handleFileChange}
-                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        ref={fileInputRef}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     />
                 </div>
                 {fileName && (
-                    <p className="text-sm font-medium text-center">
-                        Current file: <span className="text-primary">{fileName}</span>
-                    </p>
+                    <div className="flex items-center justify-between p-2 bg-secondary/50 rounded-md border border-border">
+                        <p className="text-sm font-medium truncate flex-1">
+                            Current: <span className="text-primary">{fileName}</span>
+                        </p>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleClear}
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
                 )}
             </CardContent>
         </Card>
