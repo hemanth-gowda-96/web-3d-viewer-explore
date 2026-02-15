@@ -53,13 +53,13 @@ export function ModelViewer({ modelData }) {
         <div className="w-full h-[600px] bg-black rounded-lg overflow-hidden shadow-2xl relative">
             <ViewControls controlsRef={controlsRef} />
             <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-                <ambientLight intensity={0.8} />
-                <hemisphereLight intensity={1.0} groundColor="#444444" skyColor="#ffffff" />
+                <ambientLight intensity={1.0} />
+                <hemisphereLight intensity={1.0} groundColor="#ffffff" skyColor="#ffffff" />
                 <pointLight position={[10, 10, 10]} intensity={1.5} />
                 <pointLight position={[-10, -10, -10]} intensity={1.5} />
-                <pointLight position={[0, -10, 0]} intensity={1.2} />
+                <pointLight position={[0, -10, 0]} intensity={3} />
                 <Suspense fallback={null}>
-                    <Stage environment="city" intensity={0.5} shadows={false}>
+                    <Stage environment="studio" intensity={0.8} shadows={false}>
                         <Center>
                             <Model modelData={modelData} />
                         </Center>
