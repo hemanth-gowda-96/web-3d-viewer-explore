@@ -4,14 +4,14 @@ import { FilePicker } from './components/FilePicker';
 import './App.css';
 
 function App() {
-  const [modelUrl, setModelUrl] = useState(null);
+  const [modelData, setModelData] = useState(null);
 
-  const handleFileSelect = (url) => {
-    // If there was a previous URL, revoke it to avoid memory leaks
-    if (modelUrl) {
-      URL.revokeObjectURL(modelUrl);
+  const handleFileSelect = (data) => {
+    // Revoke previous URLs to avoid memory leaks
+    if (modelData?.fileMap) {
+      modelData.fileMap.forEach(url => URL.revokeObjectURL(url));
     }
-    setModelUrl(url);
+    setModelData(data);
   };
 
   return (
@@ -42,7 +42,7 @@ function App() {
           </div>
 
           <div className="lg:col-span-2">
-            <ModelViewer url={modelUrl} />
+            <ModelViewer modelData={modelData} />
           </div>
         </main>
 
