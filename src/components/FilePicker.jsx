@@ -61,7 +61,7 @@ export function FilePicker({ onFileSelect, onClear }) {
                     </p>
                     <input
                         type="file"
-                        accept=".gltf,.glb,.bin,.jpg,.png,.jpeg"
+                        accept=".gltf,.glb,.bin,.jpg,.png,.jpeg,.webp"
                         multiple
                         onChange={handleFileChange}
                         ref={fileInputRef}
