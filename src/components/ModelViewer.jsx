@@ -1,22 +1,14 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Stage, Center } from '@react-three/drei';
-import { Suspense, useRef } from 'react';
-import { LoadingManager, Vector3 } from 'three';
+import { Suspense, useRef, useMemo } from 'react';
+import { updateCameraView } from '../lib/threejs/viewUtils';
+import { createModelLoadingManager } from '../lib/threejs/modelUtils';
 
 function Model({ modelData }) {
     const { mainUrl, fileMap } = modelData;
 
-    // Create a LoadingManager to handle relative paths
-    const manager = new LoadingManager();
-    manager.setURLModifier((url) => {
-        // url is the relative path found in the gltf (e.g., "PartDesignExample-Body.bin")
-        // We check if it's in our fileMap
-        const fileName = url.split('/').pop();
-        if (fileMap.has(fileName)) {
-            return fileMap.get(fileName);
-        }
-        return url;
-    });
+    // Use memo to ensure manager is only created when fileMap changes
+    const manager = useMemo(() => createModelLoadingManager(fileMap), [fileMap]);
 
     const { scene } = useGLTF(mainUrl, false, false, (loader) => {
         loader.manager = manager;
@@ -28,60 +20,20 @@ function Model({ modelData }) {
 const ViewControls = ({ controlsRef }) => {
     const setView = (view) => {
         if (!controlsRef.current) return;
-
-        const camera = controlsRef.current.object;
-        // Calculate distance based on current camera distance
-        const distance = camera.position.length() || 5;
-        const target = new Vector3(0, 0, 0);
-
-        switch (view) {
-            case 'front':
-                camera.position.set(0, 0, distance);
-                break;
-            case 'back':
-                camera.position.set(0, 0, -distance);
-                break;
-            case 'up':
-                camera.position.set(0, distance, 0);
-                break;
-            case 'down':
-                camera.position.set(0, -distance, 0);
-                break;
-            default:
-                break;
-        }
-
-        camera.lookAt(target);
-        controlsRef.current.target.copy(target);
-        controlsRef.current.update();
+        updateCameraView(controlsRef.current.object, controlsRef.current, view);
     };
 
     return (
         <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
-            <button
-                onClick={() => setView('front')}
-                className="px-3 py-1.5 bg-black/60 hover:bg-black/80 text-white text-xs font-medium rounded border border-white/20 transition-colors backdrop-blur-sm"
-            >
-                Front
-            </button>
-            <button
-                onClick={() => setView('back')}
-                className="px-3 py-1.5 bg-black/60 hover:bg-black/80 text-white text-xs font-medium rounded border border-white/20 transition-colors backdrop-blur-sm"
-            >
-                Back
-            </button>
-            <button
-                onClick={() => setView('up')}
-                className="px-3 py-1.5 bg-black/60 hover:bg-black/80 text-white text-xs font-medium rounded border border-white/20 transition-colors backdrop-blur-sm"
-            >
-                Up
-            </button>
-            <button
-                onClick={() => setView('down')}
-                className="px-3 py-1.5 bg-black/60 hover:bg-black/80 text-white text-xs font-medium rounded border border-white/20 transition-colors backdrop-blur-sm"
-            >
-                Down
-            </button>
+            {['front', 'back', 'up', 'down'].map((view) => (
+                <button
+                    key={view}
+                    onClick={() => setView(view)}
+                    className="px-3 py-1.5 bg-black/60 hover:bg-black/80 text-white text-xs font-medium rounded border border-white/20 transition-colors backdrop-blur-sm capitalize"
+                >
+                    {view}
+                </button>
+            ))}
         </div>
     );
 };
@@ -113,4 +65,5 @@ export function ModelViewer({ modelData }) {
         </div>
     );
 }
+
 
