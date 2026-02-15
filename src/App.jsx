@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { ModelViewer } from './components/ModelViewer';
+import { useState, lazy, Suspense } from 'react';
 import { FilePicker } from './components/FilePicker';
 import './App.css';
+
+const ModelViewer = lazy(() => import('./components/ModelViewer').then(module => ({ default: module.ModelViewer })));
 
 function App() {
   const [modelData, setModelData] = useState(null);
@@ -50,7 +51,9 @@ function App() {
           </div>
 
           <div className="lg:col-span-2">
-            <ModelViewer modelData={modelData} />
+            <Suspense fallback={<div className="w-full h-[600px] flex items-center justify-center bg-secondary/10 rounded-lg">Loading 3D Viewer...</div>}>
+              <ModelViewer modelData={modelData} />
+            </Suspense>
           </div>
         </main>
       </div>
