@@ -7,7 +7,8 @@
             "EPAC": "WITHOUT",
             "GREA_BOX": "GK",
             "GREA_BOX_REQ": "NO",
-            "File": "assets/models/sa12_asm_1/fc_SA12_ASM_1.glb"
+            "File": "assets/models/sa12_asm_1/fc_SA12_ASM_1.glb",
+            "STEP_FILE": "assets/models/sa12_asm_1/sa12_asm_1.stp"
         },
         {
             "key": 2,
@@ -16,7 +17,8 @@
             "EPAC": "WITH",
             "GREA_BOX": "GK",
             "GREA_BOX_REQ": "NO",
-            "File": "assets/models/sa12_asm_2/fc_SA12_ASM_2.glb"
+            "File": "assets/models/sa12_asm_2/fc_SA12_ASM_2.glb",
+            "STEP_FILE": "assets/models/sa12_asm_2/sa12_asm_2.stp"
         },
         {
             "key": 3,
@@ -25,7 +27,8 @@
             "EPAC": "WITH",
             "GREA_BOX": "GK",
             "GREA_BOX_REQ": "YES",
-            "File": "assets/models/sa12_asm_3/fc_SA12_ASM_3.glb"
+            "File": "assets/models/sa12_asm_3/fc_SA12_ASM_3.glb",
+            "STEP_FILE": "assets/models/sa12_asm_3/sa12_asm_3.stp"
         },
         {
             "key": 4,
@@ -34,7 +37,8 @@
             "EPAC": "WITHOUT",
             "GREA_BOX": "GK",
             "GREA_BOX_REQ": "YES",
-            "File": "assets/models/sa12_asm_4/fc_SA12_ASM_4.glb"
+            "File": "assets/models/sa12_asm_4/fc_SA12_ASM_4.glb",
+            "STEP_FILE": "assets/models/sa12_asm_4/sa12_asm_4.stp"
         }
     ]
 }
