@@ -14,7 +14,10 @@ function Model({ modelData }) {
         loader.manager = manager;
     });
 
-    return <primitive object={scene} />;
+    // Clone the scene to ensure Stage calculates bounds for a unique instance
+    const clonedScene = useMemo(() => scene.clone(), [scene]);
+
+    return <primitive object={clonedScene} />;
 }
 
 const ViewControls = ({ controlsRef }) => {
@@ -52,17 +55,16 @@ export function ModelViewer({ modelData }) {
     return (
         <div className="w-full h-[600px] bg-black rounded-lg overflow-hidden shadow-2xl relative">
             <ViewControls controlsRef={controlsRef} />
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-                <ambientLight intensity={1.0} />
-                <hemisphereLight intensity={1.0} groundColor="#ffffff" skyColor="#ffffff" />
-                <pointLight position={[10, 10, 10]} intensity={1.5} />
-                <pointLight position={[-10, -10, -10]} intensity={1.5} />
-                <pointLight position={[0, -10, 0]} intensity={3} />
+            <Canvas camera={{ position: [0, 0, 5], fov: 45 }} shadows>
                 <Suspense fallback={null}>
-                    <Stage environment="studio" intensity={0.8} shadows={false}>
-                        <Center>
-                            <Model modelData={modelData} />
-                        </Center>
+                    <Stage
+                        key={modelData.mainUrl}
+                        environment="city"
+                        intensity={0.6}
+                        contactShadow={{ opacity: 0.7, blur: 2 }}
+                        adjustCamera={true}
+                    >
+                        <Model modelData={modelData} />
                     </Stage>
                 </Suspense>
                 <OrbitControls ref={controlsRef} makeDefault />
