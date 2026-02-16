@@ -12,6 +12,7 @@ export function ModelConfigurator({ onModelSelect }) {
         GREA_BOX: '',
         GREA_BOX_REQ: 'NO'
     });
+    const [currentMatch, setCurrentMatch] = useState(null);
 
     useEffect(() => {
         fetch('/assets/config/model_configs.json')
@@ -57,10 +58,13 @@ export function ModelConfigurator({ onModelSelect }) {
         );
 
         if (match) {
+            setCurrentMatch(match);
             onModelSelect({
                 mainUrl: '/' + match.File,
                 fileMap: new Map() // Empty map for static public files
             });
+        } else {
+            setCurrentMatch(null);
         }
     }, [selections, configs, onModelSelect]);
 
@@ -112,6 +116,23 @@ export function ModelConfigurator({ onModelSelect }) {
                         );
                     })}
                 </div>
+
+                {currentMatch && currentMatch.STEP_FILE && (
+                    <div className="pt-4 border-t border-border mt-4">
+                        <a
+                            href={'/' + currentMatch.STEP_FILE}
+                            download={currentMatch.STEP_FILE.split('/').pop()}
+                            className="flex items-center justify-center gap-2 w-full py-2 px-4 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-primary/90 transition-all shadow-sm"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" x2="12" y1="15" y2="3" />
+                            </svg>
+                            Download STEP File
+                        </a>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );
