@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Stage, Center } from '@react-three/drei';
+import { OrbitControls, useGLTF, Center, Bounds } from '@react-three/drei';
 import { Suspense, useRef, useMemo } from 'react';
 import { updateCameraView } from '../lib/threejs/viewUtils';
 import { createModelLoadingManager } from '../lib/threejs/modelUtils';
@@ -12,17 +12,22 @@ function Model({ modelData }) {
         loader.manager = manager;
     });
 
-    // Programmatically boost material brightness for better visibility
+    // Programmatically optimize materials for CAD clarity
     useMemo(() => {
         scene.traverse((child) => {
             if (child.isMesh && child.material) {
-                child.material.envMapIntensity = 2.0;
+                // Reduce environment reliance and metalness to avoid "dark steel" look
+                child.material.envMapIntensity = 0.5;
+                if (child.material.metalness > 0.5) {
+                    child.material.metalness = 0.2;
+                }
+                child.material.roughness = 0.4; // Ensure it's not too shiny/reflective
                 child.material.needsUpdate = true;
             }
         });
     }, [scene]);
 
-    // Clone to ensure Stage framing works correctly for different instances
+    // Clone to ensure clean state
     const clonedScene = useMemo(() => scene.clone(), [scene]);
 
     return <primitive object={clonedScene} />;
@@ -61,30 +66,40 @@ export function ModelViewer({ modelData }) {
     }
 
     return (
-        <div className="w-full h-[600px] bg-black rounded-lg overflow-hidden shadow-2xl relative">
+        <div className="w-full h-[600px] bg-[#1a1a1a] rounded-lg overflow-hidden shadow-2xl relative">
             <ViewControls controlsRef={controlsRef} />
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }} shadows={false}>
-                {/* Global Ambient Light */}
-                <ambientLight intensity={1.5} />
+            <Canvas
+                camera={{ position: [0, 0, 5], fov: 45 }}
+                shadows={false}
+                gl={{
+                    toneMappingExposure: 1.5,
+                    antialias: true
+                }}
+            >
+                {/* Clean CAD Lighting Setup (3-Point + Vertical Fill) */}
+                <ambientLight intensity={0.8} />
 
-                {/* Dedicated light from below to eliminate dark shadows on the bottom */}
-                <pointLight position={[0, -10, 0]} intensity={3} />
+                {/* Key Light: High intensity from front-side */}
+                <directionalLight position={[10, 10, 10]} intensity={1.5} />
+
+                {/* Fill Light: Softens shadows from the key light */}
+                <directionalLight position={[-10, 5, 5]} intensity={1.0} />
+
+                {/* Back Light: Highlights edges and adds depth */}
+                <directionalLight position={[0, 10, -10]} intensity={0.8} />
+
+                {/* Bottom Light: Eliminates dark shadows from below */}
+                <directionalLight position={[0, -10, 0]} intensity={1.0} />
 
                 <Suspense fallback={null}>
-                    <Stage
-                        key={modelData.mainUrl}
-                        environment="city"
-                        intensity={1.0}
-                        shadows={false}
-                        adjustCamera={true}
-                    >
-                        <Model modelData={modelData} />
-                    </Stage>
+                    <Bounds fit observe margin={1.2}>
+                        <Center top>
+                            <Model modelData={modelData} />
+                        </Center>
+                    </Bounds>
                 </Suspense>
                 <OrbitControls ref={controlsRef} makeDefault />
             </Canvas>
         </div>
     );
 }
-
-
