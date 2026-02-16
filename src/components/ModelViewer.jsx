@@ -6,15 +6,23 @@ import { createModelLoadingManager } from '../lib/threejs/modelUtils';
 
 function Model({ modelData }) {
     const { mainUrl, fileMap } = modelData;
-
-    // Use memo to ensure manager is only created when fileMap changes
     const manager = useMemo(() => createModelLoadingManager(fileMap), [fileMap]);
 
     const { scene } = useGLTF(mainUrl, 'https://www.gstatic.com/draco/v1/decoders/', false, (loader) => {
         loader.manager = manager;
     });
 
-    // Clone the scene to ensure Stage calculates bounds for a unique instance
+    // Programmatically boost material brightness for better visibility
+    useMemo(() => {
+        scene.traverse((child) => {
+            if (child.isMesh && child.material) {
+                child.material.envMapIntensity = 2.0;
+                child.material.needsUpdate = true;
+            }
+        });
+    }, [scene]);
+
+    // Clone to ensure Stage framing works correctly for different instances
     const clonedScene = useMemo(() => scene.clone(), [scene]);
 
     return <primitive object={clonedScene} />;
@@ -55,13 +63,19 @@ export function ModelViewer({ modelData }) {
     return (
         <div className="w-full h-[600px] bg-black rounded-lg overflow-hidden shadow-2xl relative">
             <ViewControls controlsRef={controlsRef} />
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }} shadows>
+            <Canvas camera={{ position: [0, 0, 5], fov: 45 }} shadows={false}>
+                {/* Global Ambient Light */}
+                <ambientLight intensity={1.5} />
+
+                {/* Dedicated light from below to eliminate dark shadows on the bottom */}
+                <pointLight position={[0, -10, 0]} intensity={3} />
+
                 <Suspense fallback={null}>
                     <Stage
                         key={modelData.mainUrl}
                         environment="city"
-                        intensity={0.6}
-                        contactShadow={{ opacity: 0.7, blur: 2 }}
+                        intensity={1.0}
+                        shadows={false}
                         adjustCamera={true}
                     >
                         <Model modelData={modelData} />

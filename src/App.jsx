@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, useCallback } from 'react';
 import { FilePicker } from './components/FilePicker';
 import { ModelConfigurator } from './components/ModelConfigurator';
 import './App.css';
@@ -9,28 +9,35 @@ function App() {
   const [modelData, setModelData] = useState(null);
   const [activeTab, setActiveTab] = useState('config'); // 'config' or 'upload'
 
-  const handleFileSelect = (data) => {
-    // Revoke previous URLs to avoid memory leaks
-    if (modelData?.fileMap) {
-      modelData.fileMap.forEach(url => URL.revokeObjectURL(url));
-    }
-    setModelData(data);
-  };
+  const handleFileSelect = useCallback((data) => {
+    setModelData(prev => {
+      if (prev?.mainUrl === data.mainUrl) return prev;
+      if (prev?.fileMap) {
+        prev.fileMap.forEach(url => URL.revokeObjectURL(url));
+      }
+      return data;
+    });
+  }, []);
 
-  const handleConfigSelect = (data) => {
-    // Revoke previous URLs to avoid memory leaks
-    if (modelData?.fileMap) {
-      modelData.fileMap.forEach(url => URL.revokeObjectURL(url));
-    }
-    setModelData(data);
-  };
+  const handleConfigSelect = useCallback((data) => {
+    setModelData(prev => {
+      // Guard against redundant updates to prevent infinite loops and re-zooming
+      if (prev?.mainUrl === data.mainUrl) return prev;
+      if (prev?.fileMap) {
+        prev.fileMap.forEach(url => URL.revokeObjectURL(url));
+      }
+      return data;
+    });
+  }, []);
 
-  const handleClear = () => {
-    if (modelData?.fileMap) {
-      modelData.fileMap.forEach(url => URL.revokeObjectURL(url));
-    }
-    setModelData(null);
-  };
+  const handleClear = useCallback(() => {
+    setModelData(prev => {
+      if (prev?.fileMap) {
+        prev.fileMap.forEach(url => URL.revokeObjectURL(url));
+      }
+      return null;
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -51,8 +58,8 @@ function App() {
               <button
                 onClick={() => setActiveTab('config')}
                 className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'config'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
                 Configuration
@@ -60,8 +67,8 @@ function App() {
               <button
                 onClick={() => setActiveTab('upload')}
                 className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'upload'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
                 File Upload
