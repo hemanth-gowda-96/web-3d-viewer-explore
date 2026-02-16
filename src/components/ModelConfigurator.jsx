@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
-import { Input } from './ui/input';
 
 export function ModelConfigurator({ onModelSelect }) {
     const [configs, setConfigs] = useState([]);
@@ -9,8 +8,8 @@ export function ModelConfigurator({ onModelSelect }) {
         OPT_DRV: '',
         TERMINAL: '',
         EPAC: '',
-        GREA_BOX: '',
-        GREA_BOX_REQ: 'NO'
+        GEAR_BOX: '',
+        GEAR_BOX_REQ: 'NO'
     });
     const [currentMatch, setCurrentMatch] = useState(null);
 
@@ -25,8 +24,8 @@ export function ModelConfigurator({ onModelSelect }) {
                         OPT_DRV: first.OPT_DRV,
                         TERMINAL: first.TERMINAL,
                         EPAC: first.EPAC,
-                        GREA_BOX: first.GREA_BOX,
-                        GREA_BOX_REQ: first.GREA_BOX_REQ
+                        GEAR_BOX: first.GEAR_BOX,
+                        GEAR_BOX_REQ: first.GEAR_BOX_REQ
                     });
                 }
                 setLoading(false);
@@ -38,7 +37,7 @@ export function ModelConfigurator({ onModelSelect }) {
     }, []);
 
     const options = useMemo(() => {
-        const keys = ['OPT_DRV', 'TERMINAL', 'EPAC', 'GREA_BOX', 'GREA_BOX_REQ'];
+        const keys = ['OPT_DRV', 'TERMINAL', 'EPAC', 'GEAR_BOX', 'GEAR_BOX_REQ'];
         const optMap = {};
         keys.forEach(key => {
             optMap[key] = Array.from(new Set(configs.map(item => item[key])));
@@ -53,8 +52,8 @@ export function ModelConfigurator({ onModelSelect }) {
             item.OPT_DRV === selections.OPT_DRV &&
             item.TERMINAL === selections.TERMINAL &&
             item.EPAC === selections.EPAC &&
-            item.GREA_BOX === selections.GREA_BOX &&
-            item.GREA_BOX_REQ === selections.GREA_BOX_REQ
+            item.GEAR_BOX === selections.GEAR_BOX &&
+            item.GEAR_BOX_REQ === selections.GEAR_BOX_REQ
         );
 
         if (match) {
@@ -83,7 +82,7 @@ export function ModelConfigurator({ onModelSelect }) {
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
                     {Object.keys(options).map(key => {
-                        if (key === 'GREA_BOX_REQ') {
+                        if (key === 'GEAR_BOX_REQ') {
                             return (
                                 <div key={key} className="flex items-center gap-2">
                                     <input

@@ -5,8 +5,8 @@
             "OPT_DRV": "A",
             "TERMINAL": "PLUG-IN",
             "EPAC": "WITHOUT",
-            "GREA_BOX": "GK",
-            "GREA_BOX_REQ": "NO",
+            "GEAR_BOX": "GK",
+            "GEAR_BOX_REQ": "NO",
             "File": "assets/models/sa12_asm_1/fc_SA12_ASM_1.glb",
             "STEP_FILE": "assets/models/sa12_asm_1/sa12_asm_1.stp"
         },
@@ -15,8 +15,8 @@
             "OPT_DRV": "A",
             "TERMINAL": "PLUG-IN",
             "EPAC": "WITH",
-            "GREA_BOX": "GK",
-            "GREA_BOX_REQ": "NO",
+            "GEAR_BOX": "GK",
+            "GEAR_BOX_REQ": "NO",
             "File": "assets/models/sa12_asm_2/fc_SA12_ASM_2.glb",
             "STEP_FILE": "assets/models/sa12_asm_2/sa12_asm_2.stp"
         },
@@ -25,8 +25,8 @@
             "OPT_DRV": "A",
             "TERMINAL": "PLUG-IN",
             "EPAC": "WITH",
-            "GREA_BOX": "GK",
-            "GREA_BOX_REQ": "YES",
+            "GEAR_BOX": "GK",
+            "GEAR_BOX_REQ": "YES",
             "File": "assets/models/sa12_asm_3/fc_SA12_ASM_3.glb",
             "STEP_FILE": "assets/models/sa12_asm_3/sa12_asm_3.stp"
         },
@@ -35,8 +35,8 @@
             "OPT_DRV": "A",
             "TERMINAL": "PLUG-IN",
             "EPAC": "WITHOUT",
-            "GREA_BOX": "GK",
-            "GREA_BOX_REQ": "YES",
+            "GEAR_BOX": "GK",
+            "GEAR_BOX_REQ": "YES",
             "File": "assets/models/sa12_asm_4/fc_SA12_ASM_4.glb",
             "STEP_FILE": "assets/models/sa12_asm_4/sa12_asm_4.stp"
         }
