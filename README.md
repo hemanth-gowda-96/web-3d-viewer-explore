@@ -1,16 +1,60 @@
-# React + Vite
+# Web 3D Viewer (Explore)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A high-performance 3D model viewer designed for CAD and mechanical models, built with modern web technologies.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Multi-Format Support**: Load and view `.glb`, `.gltf`, and `.stp` models.
+- **CAD-Ready Lighting**: Optimized lighting setup (Headlight, Fill light, Shadowless) for clear mechanical model visualization.
+- **Intuitive Navigation**: Quick-view controls for Front, Back, Up, and Down perspectives.
+- **Download Support**: Easily download the original CAD files (e.g., `.stp`) directly from the viewer.
+- **Zeroth Designs Branding**: Clean and professional interface integrated with brand identity.
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: [React 19](https://react.dev/)
+- **Build Tool**: [Vite 8](https://vite.dev/)
+- **3D Engine**: [Three.js](https://threejs.org/)
+- **React Bindings**: [@react-three/fiber](https://r3f.docs.pmnd.rs/) & [@react-three/drei](https://github.com/pmndrs/drei)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
 
-## Expanding the ESLint configuration
+## 📦 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (latest LTS recommended)
+- [npm](https://www.npmjs.com/)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd web-3d-viewer-explore
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Development
+
+Run the development server:
+```bash
+npm run dev
+```
+
+### Build
+
+Create a production build:
+```bash
+npm run build
+```
+
+## 📜 License
+
+Private - All rights reserved.
