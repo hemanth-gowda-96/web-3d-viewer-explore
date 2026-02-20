@@ -1,12 +1,21 @@
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { SignIn } from './pages/SignIn';
 import { PostLogin } from './pages/PostLogin';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
+
+function ProtectedRoute({ children }) {
+  const { session } = useAuth();
+  if (!session) {
+    return <Navigate to="/signin" replace />;
+  }
+  return children;
+}
 
 function Header() {
   const location = useLocation();
-  const isDashboard = location.pathname === '/dashboard';
+  const { session, signOut } = useAuth();
 
   return (
     <header className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
@@ -23,14 +32,20 @@ function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        {isDashboard ? (
+        {session ? (
           <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-muted-foreground mr-2">Welcome, Pro User</span>
-            <Link
-              to="/"
-              className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2"
+            <span className="text-sm font-medium text-muted-foreground mr-2">Welcome, {session.user.email}</span>
+            <button
+              onClick={signOut}
+              className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2 cursor-pointer"
             >
               Sign Out
+            </button>
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 h-10 px-6 py-2"
+            >
+              Dashboard
             </Link>
           </div>
         ) : (
@@ -48,27 +63,33 @@ function Header() {
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-background text-foreground flex flex-col">
-        <div className="max-w-7xl mx-auto w-full p-4 md:p-8 flex-grow flex flex-col space-y-8">
-          <Header />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/dashboard" element={<PostLogin />} />
-          </Routes>
-        </div>
-
-        <footer className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground mt-auto">
-          <p>© 2025 Zeroth Designs. All rights Reserved.</p>
-          <div className="flex gap-4">
-            <a href="https://zerothdesigns.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Website</a>
-            <a href="https://www.linkedin.com/company/zerothdesigns" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">LinkedIn</a>
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-background text-foreground flex flex-col">
+          <div className="max-w-7xl mx-auto w-full p-4 md:p-8 flex-grow flex flex-col space-y-8">
+            <Header />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <PostLogin />
+                </ProtectedRoute>
+              } />
+            </Routes>
           </div>
-          <p>Built for Conscious Engineering.</p>
-        </footer>
-      </div>
-    </Router>
+
+          <footer className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground mt-auto">
+            <p>© 2025 Zeroth Designs. All rights Reserved.</p>
+            <div className="flex gap-4">
+              <a href="https://zerothdesigns.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Website</a>
+              <a href="https://www.linkedin.com/company/zerothdesigns" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">LinkedIn</a>
+            </div>
+            <p>Built for Conscious Engineering.</p>
+          </footer>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
