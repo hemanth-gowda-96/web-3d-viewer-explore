@@ -1,0 +1,24 @@
+{
+    "data": [
+        {
+            "key": 1,
+            "OPT_DRV": "A",
+            "TERMINAL": "PLUG-IN",
+            "EPAC": "WITHOUT",
+            "GEAR_BOX": "GK",
+            "GEAR_BOX_REQ": "NO",
+            "File": "assets/models/sa12_asm_1/fc_SA12_ASM_1.glb",
+            "STEP_FILE": "assets/models/sa12_asm_1/sa12_asm_1.stp"
+        },
+        {
+            "key": 2,
+            "OPT_DRV": "A",
+            "TERMINAL": "PLUG-IN",
+            "EPAC": "WITH",
+            "GEAR_BOX": "GK",
+            "GEAR_BOX_REQ": "NO",
+            "File": "assets/models/sa12_asm_2/fc_SA12_ASM_2.glb",
+            "STEP_FILE": "assets/models/sa12_asm_2/sa12_asm_2.stp"
+        }
+    ]
+}

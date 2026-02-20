@@ -1,114 +1,74 @@
-import { useState, lazy, Suspense, useCallback } from 'react';
-import { FilePicker } from './components/FilePicker';
-import { ModelConfigurator } from './components/ModelConfigurator';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { SignIn } from './pages/SignIn';
+import { PostLogin } from './pages/PostLogin';
 import './App.css';
 
-const ModelViewer = lazy(() => import('./components/ModelViewer').then(module => ({ default: module.ModelViewer })));
-
-function App() {
-  const [modelData, setModelData] = useState(null);
-  const [activeTab, setActiveTab] = useState('config'); // 'config' or 'upload'
-
-  const handleFileSelect = useCallback((data) => {
-    setModelData(prev => {
-      if (prev?.mainUrl === data.mainUrl) return prev;
-      if (prev?.fileMap) {
-        prev.fileMap.forEach(url => URL.revokeObjectURL(url));
-      }
-      return data;
-    });
-  }, []);
-
-  const handleConfigSelect = useCallback((data) => {
-    setModelData(prev => {
-      // Guard against redundant updates to prevent infinite loops and re-zooming
-      if (prev?.mainUrl === data.mainUrl) return prev;
-      if (prev?.fileMap) {
-        prev.fileMap.forEach(url => URL.revokeObjectURL(url));
-      }
-      return data;
-    });
-  }, []);
-
-  const handleClear = useCallback(() => {
-    setModelData(prev => {
-      if (prev?.fileMap) {
-        prev.fileMap.forEach(url => URL.revokeObjectURL(url));
-      }
-      return null;
-    });
-  }, []);
+function Header() {
+  const location = useLocation();
+  const isDashboard = location.pathname === '/dashboard';
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <div className="max-w-7xl mx-auto w-full p-4 md:p-8 flex-grow space-y-8">
-        <header className="flex flex-col items-center space-y-4">
-          <div className="flex items-center gap-4">
-            <img src="/logo/zerothdesign.png" alt="Zeroth Designs Logo" className="h-16 w-auto" />
-            <div className="h-12 w-px bg-border hidden md:block"></div>
-            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
-              3D Model Viewer
-            </h1>
-          </div>
-        </header>
-
-        <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1 flex flex-col space-y-6">
-            <div className="flex p-1 bg-secondary/50 rounded-lg border border-border">
-              <button
-                onClick={() => setActiveTab('config')}
-                className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'config'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-                  }`}
-              >
-                Configuration
-              </button>
-              <button
-                onClick={() => setActiveTab('upload')}
-                className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'upload'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-                  }`}
-              >
-                File Upload
-              </button>
-            </div>
-
-            {activeTab === 'config' ? (
-              <ModelConfigurator onModelSelect={handleConfigSelect} />
-            ) : (
-              <FilePicker onFileSelect={handleFileSelect} onClear={handleClear} />
-            )}
-
-            <div className="p-4 bg-secondary/30 rounded-lg border border-border">
-              <h3 className="font-semibold mb-2">Instructions</h3>
-              <ul className="text-sm list-disc list-inside space-y-1 text-muted-foreground">
-                <li>{activeTab === 'config' ? "Select options to view a pre-configured model." : "Upload a .gltf or .glb file."}</li>
-                <li>Use mouse to rotate (Left Click).</li>
-                <li>Zoom in/out (Scroll).</li>
-                <li>Pan around (Right Click).</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="lg:col-span-2">
-            <Suspense fallback={<div className="w-full h-[600px] flex items-center justify-center bg-secondary/10 rounded-lg">Loading 3D Viewer...</div>}>
-              <ModelViewer modelData={modelData} />
-            </Suspense>
-          </div>
-        </main>
+    <header className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+      <div className="flex items-center gap-4">
+        <Link to="/">
+          <img src="/logo/zerothdesign.png" alt="Zeroth Designs Logo" className="h-16 w-auto" />
+        </Link>
+        <div className="h-12 w-px bg-border hidden md:block"></div>
+        <Link to="/">
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight lg:text-5xl hover:opacity-80 transition-opacity">
+            3D Model Viewer
+          </h1>
+        </Link>
       </div>
 
-      <footer className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-        <p>© 2025 Zeroth Designs. All rights Reserved.</p>
-        <div className="flex gap-4">
-          <a href="https://zerothdesigns.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Website</a>
-          <a href="https://www.linkedin.com/company/zerothdesigns" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">LinkedIn</a>
+      <div className="flex items-center gap-4">
+        {isDashboard ? (
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-muted-foreground mr-2">Welcome, Pro User</span>
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2"
+            >
+              Sign Out
+            </Link>
+          </div>
+        ) : (
+          <Link
+            to="/signin"
+            className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-md hover:bg-primary/90 h-10 px-6 py-2"
+          >
+            Sign In
+          </Link>
+        )}
+      </div>
+    </header>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <div className="min-h-screen bg-background text-foreground flex flex-col">
+        <div className="max-w-7xl mx-auto w-full p-4 md:p-8 flex-grow flex flex-col space-y-8">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/dashboard" element={<PostLogin />} />
+          </Routes>
         </div>
-        <p>Built for Conscious Engineering.</p>
-      </footer>
-    </div>
+
+        <footer className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground mt-auto">
+          <p>© 2025 Zeroth Designs. All rights Reserved.</p>
+          <div className="flex gap-4">
+            <a href="https://zerothdesigns.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Website</a>
+            <a href="https://www.linkedin.com/company/zerothdesigns" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">LinkedIn</a>
+          </div>
+          <p>Built for Conscious Engineering.</p>
+        </footer>
+      </div>
+    </Router>
   );
 }
 
