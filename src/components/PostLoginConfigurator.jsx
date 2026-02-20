@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 
-export function ModelConfigurator({ onModelSelect }) {
+export function PostLoginConfigurator({ onModelSelect }) {
     const [configs, setConfigs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selections, setSelections] = useState({
@@ -14,7 +14,7 @@ export function ModelConfigurator({ onModelSelect }) {
     const [currentMatch, setCurrentMatch] = useState(null);
 
     useEffect(() => {
-        fetch('/assets/config/model_configs_limited.json')
+        fetch('/assets/config/model_configs_full.json')
             .then(res => res.json())
             .then(data => {
                 setConfigs(data.data);
@@ -31,7 +31,7 @@ export function ModelConfigurator({ onModelSelect }) {
                 setLoading(false);
             })
             .catch(err => {
-                console.error("Failed to load model configs:", err);
+                console.error("Failed to load full model configs:", err);
                 setLoading(false);
             });
     }, []);
@@ -77,7 +77,10 @@ export function ModelConfigurator({ onModelSelect }) {
     return (
         <Card className="border border-border bg-secondary/30">
             <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold">Model Configuration</CardTitle>
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    Model Configuration
+                    <span className="text-xs font-normal px-2 py-0.5 bg-primary/20 text-primary rounded-full">Pro</span>
+                </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
