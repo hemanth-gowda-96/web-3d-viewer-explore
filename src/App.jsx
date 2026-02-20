@@ -16,6 +16,7 @@ function ProtectedRoute({ children }) {
 function Header() {
   const location = useLocation();
   const { session, signOut } = useAuth();
+  const isSignInPage = location.pathname === '/signin';
 
   return (
     <header className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
@@ -48,6 +49,13 @@ function Header() {
               Dashboard
             </Link>
           </div>
+        ) : isSignInPage ? (
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-md text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2"
+          >
+            Back
+          </Link>
         ) : (
           <Link
             to="/signin"

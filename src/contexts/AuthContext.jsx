@@ -14,6 +14,9 @@ export const AuthProvider = ({ children }) => {
             setSession(session);
             setUser(session?.user ?? null);
             setLoading(false);
+        }).catch(err => {
+            console.error("Supabase getSession error:", err);
+            setLoading(false);
         });
 
         // Listen for changes on auth state (in, out, etc.)
