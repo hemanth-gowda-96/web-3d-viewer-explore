@@ -55,6 +55,11 @@ Create a production build:
 npm run build
 ```
 
+## ☁️ Deployment
+
+This project is configured for easy deployment to **Cloudflare Pages**. 
+For full deployment instructions, environment variable setup, and routing information, please see the [Cloudflare Deployment Guide](cloudflare-deploy.md).
+
 ## 📜 License
 
 Private - All rights reserved.
